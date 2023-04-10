@@ -1,0 +1,77 @@
+{% extends 'layout/base.html' %}
+{% block title %} 
+List Buku 
+{% endblock %}
+
+{% block content %}
+<div class="container py-2">
+  <div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <div class="fw-bold">
+        List Buku
+      </div>
+      <a href="{% url 'create_book' %}" class="btn btn-sm btn-primary">
+        + Tambah Buku
+      </a>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Judul</th>
+            <th>Penerbit</th>
+            <th>Penulis</th>
+            <th>Genre</th>
+            <th>Tanggal Publish</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for book in books %}
+            <tr>
+              <td>{{ book.id }}</td>
+              <td>{{ book.title }}</td>
+              <td>{{ book.publisher }}</td>
+              <td>{{ book.author }}</td>
+              <td>{{ book.genre }}</td>
+              <td>{{ book.publication_date }}</td>
+              <td>
+                <a href="{% url 'update_book' pk=book.id %}" class="btn btn-sm btn-warning">
+                  <i class="fa-solid fa-pen text-white"></i>
+                </a>
+
+                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteBookModal{{ book.pk }}"><i class="fas fa-trash-alt"></i></button>
+                <!-- Delete Book Modal -->
+                <div class="modal fade" id="deleteBookModal{{ book.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteBookModalLabel">Delete Book</h5>
+                      </div>
+                      <div class="modal-body">
+                        Apakah kamu yakin ingin menghapus buku "{{ book.title }}"?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{% url 'delete_book' pk=book.pk %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">No books found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
